@@ -5,6 +5,7 @@ import connectDB from "./config/connectDB.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -18,6 +19,7 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRouter);
 app.use("/api/search", searchRoutes);
+app.use("/api/post", postRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
