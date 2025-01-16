@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   followers_count: { type: Number, default: 0 },
   following_count: { type: Number, default: 0 },
   posts_count: { type: Number, default: 0 },
+  profile_link: { type: String, default: "" },
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   created_at: { type: Date, default: Date.now },
 });
