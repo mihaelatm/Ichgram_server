@@ -42,3 +42,22 @@ export const getUserPosts = async (req, res) => {
     res.status(500).json({ error: "Error when fetching posts" });
   }
 };
+
+export const getPostById = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const post = await Post.findById(postId).populate(
+      "user_id",
+      "username profile_image"
+    );
+
+    if (!post) {
+      return res.status(404).json({ error: "Post is not found" });
+    }
+
+    res.status(200).json({ status: "ok", data: post });
+  } catch (error) {
+    res.status(500).json({ error: "Error when fetching post" });
+  }
+};
