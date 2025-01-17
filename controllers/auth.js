@@ -67,14 +67,13 @@ export const login = async (req, res) => {
       expiresIn: "3h",
     });
 
-    res
-      .status(200)
-      .json({
-        token,
-        username: user.username,
-        profileLink: user.profile_link,
-        bio: user.bio,
-      });
+    res.status(200).json({
+      token,
+      username: user.username,
+      profileLink: user.profile_link,
+      bio: user.bio,
+      profile_image: user.profile_image,
+    });
   } catch (error) {
     res.status(500).json({ message: "Login error" });
   }

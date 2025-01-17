@@ -24,10 +24,21 @@ export const createPost = async (req, res) => {
 
     user.posts_count += 1;
 
+    user.posts.push(post);
+
     await user.save();
 
     res.status(200).json({ status: "ok", data: post });
   } catch (error) {
     res.status(500).json({ error: "Error when creating post" });
+  }
+};
+
+export const getUserPosts = async (req, res) => {
+  try {
+    const posts = await Post.find({ user_id: req.user._id });
+    res.status(200).json({ status: "ok", data: posts });
+  } catch (error) {
+    res.status(500).json({ error: "Error when fetching posts" });
   }
 };
