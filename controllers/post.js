@@ -4,26 +4,36 @@ import Post from "../models/Post.js";
 export const createPost = async (req, res) => {
   const userId = req.user._id;
 
-  const { content } = req.body;
+  const { content, imageBase64 } = req.body; // Aici primim imaginea base64 din frontend
 
   try {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ error: "User is not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
+    // Asigurăm că există o imagine base64
+    if (!imageBase64 || !imageBase64.startsWith("data:image")) {
+      return res
+        .status(400)
+        .json({
+          error: "Invalid image format. Please upload a valid base64 image.",
+        });
+    }
+
+    // Creăm un nou post cu imaginea în format base64
     const post = new Post({
       user_id: userId,
-      images: ["fileNumber1"],
+      images: [imageBase64], // Stocăm imaginea direct în format base64
       content,
       created_at: new Date(),
     });
 
     await post.save();
 
+    // Actualizăm contorul de postări pentru utilizator
     user.posts_count += 1;
-
     user.posts.push(post);
 
     await user.save();
