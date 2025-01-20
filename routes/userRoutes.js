@@ -1,7 +1,11 @@
 import { Router } from "express";
-import { getUserProfile, updateUserProfile } from "../controllers/user.js";
+import {
+  getUserProfile,
+  updateUserProfile,
+  uploadProfileImage,
+} from "../controllers/user.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
-import { uploadProfileImage } from "../controllers/post.js";
+import upload from "../middlewares/multer.js";
 
 const router = Router();
 

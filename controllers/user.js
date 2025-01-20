@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import upload from "../middlewares/multer.js";
 import User from "../models/User.js";
 
 export const getUserProfile = async (req, res) => {
@@ -55,3 +55,5 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error when updating profile" });
   }
 };
+
+export const uploadProfileImage = upload.single("profile_image");

@@ -70,31 +70,30 @@ export const getPostById = async (req, res) => {
   }
 };
 
-export const updateUserProfile = async (req, res) => {
-  const userId = req.user._id;
+export const deletePost = async (req, res) => {
+  const { postId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    const post = await Post.findById(postId);
 
-    if (!user) {
-      return res.status(404).json({ message: "User is not found" });
+    if (post.user_id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Access denied" });
     }
 
-    const { username, bio } = req.body;
-
-    if (username) user.username = username;
-    if (bio) user.bio = bio;
-
-    if (req.file) {
-      const base64Image = req.file.buffer.toString("base64");
-      user.profile_image = base64Image;
+    if (!post) {
+      return res.status(404).json({ error: "Post is not found" });
     }
+
+    await Post.findByIdAndDelete(postId);
+
+    const user = await User.findById(post.user_id);
+
+    user.posts_count -= 1;
 
     await user.save();
-    res.status(200).json({ message: "Successfully updated" });
+
+    res.status(200).json({ message: "Post was successfully deleted" });
   } catch (error) {
-    res.status(500).json({ message: "Error when updating profile" });
+    res.status(500).json({ error: "Error when deleting post" });
   }
 };
-
-export const uploadProfileImage = upload.single("profile_image");
