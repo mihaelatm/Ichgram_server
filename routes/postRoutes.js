@@ -7,5 +7,6 @@ const router = Router();
 
 router.post("/", authMiddleware, upload.single("images"), createPost);
 router.get("/all", authMiddleware, getUserPosts);
+router.get("/single/:postId", authMiddleware, getPostById);
 
 export default router;

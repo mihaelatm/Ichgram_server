@@ -69,31 +69,3 @@ export const getPostById = async (req, res) => {
     res.status(500).json({ error: "Error when fetching post" });
   }
 };
-
-export const deletePost = async (req, res) => {
-  const { postId } = req.params;
-
-  try {
-    const post = await Post.findById(postId);
-
-    if (post.user_id.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ error: "Access denied" });
-    }
-
-    if (!post) {
-      return res.status(404).json({ error: "Post is not found" });
-    }
-
-    await Post.findByIdAndDelete(postId);
-
-    const user = await User.findById(post.user_id);
-
-    user.posts_count -= 1;
-
-    await user.save();
-
-    res.status(200).json({ message: "Post was successfully deleted" });
-  } catch (error) {
-    res.status(500).json({ error: "Error when deleting post" });
-  }
-};
