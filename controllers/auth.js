@@ -7,7 +7,7 @@ export const register = async (req, res) => {
 
   try {
     if (!username || !email || !password || !full_name) {
-      return res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields are required." });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -31,9 +31,10 @@ export const register = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({ message: "User has been registered successfully" });
+    res.status(201).json({ message: "User has been registered successfully." });
   } catch (error) {
-    res.status(500).json({ message: "Registration error" });
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "An error occurred during registration." });
   }
 };
 
@@ -42,7 +43,7 @@ export const login = async (req, res) => {
 
   try {
     if ((!email && !username) || !password) {
-      return res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields are required." });
     }
 
     const user = await User.findOne({
@@ -52,7 +53,7 @@ export const login = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ message: "Incorrect email/username or password" });
+        .json({ message: "Incorrect email/username or password." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -60,7 +61,7 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res
         .status(400)
-        .json({ message: "Incorrect email/username or password" });
+        .json({ message: "Incorrect email/username or password." });
     }
 
     const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET, {
@@ -71,10 +72,11 @@ export const login = async (req, res) => {
       token,
       username: user.username,
       profileLink: user.profile_link,
-      bio: user.bio,
-      profile_image: user.profile_image,
+      bio: user.bio || null,
+      profile_image: user.profile_image || null,
     });
   } catch (error) {
-    res.status(500).json({ message: "Login error" });
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "An error occurred during login." });
   }
 };
